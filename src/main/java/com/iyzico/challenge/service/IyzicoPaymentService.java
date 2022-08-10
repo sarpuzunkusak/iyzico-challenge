@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @Service
-@Transactional
+// @Transactional --> We don't need a transactional scope in this service, since we are saving all
+// the banking interactions even it fails.
 public class IyzicoPaymentService {
 
     private Logger logger = LoggerFactory.getLogger(IyzicoPaymentService.class);
@@ -24,12 +25,12 @@ public class IyzicoPaymentService {
     }
 
     public void pay(BigDecimal price) {
-        //pay with bank
+        // pay with bank
         BankPaymentRequest request = new BankPaymentRequest();
         request.setPrice(price);
         BankPaymentResponse response = bankService.pay(request);
 
-        //insert records
+        // insert records
         Payment payment = new Payment();
         payment.setBankResponse(response.getResultCode());
         payment.setPrice(price);
